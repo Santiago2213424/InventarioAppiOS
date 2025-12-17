@@ -1,0 +1,25 @@
+# Xcode
+DerivedData/
+.build/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+
+# User-specific
+xcuserdata/
+
+# Swift Package Manager
+.swiftpm/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# macOS
+.DS_Store
+

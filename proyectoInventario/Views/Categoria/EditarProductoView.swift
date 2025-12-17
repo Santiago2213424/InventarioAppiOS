@@ -1,0 +1,133 @@
+import SwiftUI
+
+struct EditarProductoView: View {
+
+    @State private var nombre: String
+    @State private var cantidad: String
+    @State private var precio: String
+
+    @Environment(\.dismiss) private var dismiss
+
+    // mock
+    init(
+        nombre: String = "Producto",
+        cantidad: Int = 10,
+        precio: Double = 5.0
+    ) {
+        _nombre = State(initialValue: nombre)
+        _cantidad = State(initialValue: String(cantidad))
+        _precio = State(initialValue: String(format: "%.2f", precio))
+    }
+
+    var body: some View {
+        ZStack {
+
+            Image("fondologin")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+
+            ScrollView {
+                VStack(spacing: 16) {
+
+                    VStack {
+                        Text("EDITAR PRODUCTO")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.white)
+                            .padding(16)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .background(Color.AzulOscuro)
+                    .cornerRadius(12)
+                    .shadow(radius: 6)
+
+                    Image("imageninicio")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 300, height: 180)
+                        .clipped()
+                        .cornerRadius(12)
+                        .shadow(radius: 4)
+
+                    VStack(spacing: 20) {
+
+                        Text("Editar Producto")
+                            .font(.system(size: 19, weight: .bold))
+                            .foregroundColor(Color.AzulOscuro)
+
+                        TextField("Nombre del producto", text: $nombre)
+                            .padding(14)
+                            .background(Color.white)
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.AzulOscuro, lineWidth: 1)
+                            )
+
+                        TextField("Cantidad", text: $cantidad)
+                            .keyboardType(.numberPad)
+                            .padding(14)
+                            .background(Color.white)
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.AzulOscuro, lineWidth: 1)
+                            )
+
+                        TextField("Precio", text: $precio)
+                            .keyboardType(.decimalPad)
+                            .padding(14)
+                            .background(Color.white)
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.AzulOscuro, lineWidth: 1)
+                            )
+
+                        HStack(spacing: 12) {
+
+                            Button {
+                                dismiss()
+                            } label: {
+                                Text("Cancelar")
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(12)
+                                    .background(Color.red)
+                                    .cornerRadius(10)
+                            }
+
+                            Button {
+                                dismiss()
+                            } label: {
+                                Text("Guardar")
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(12)
+                                    .background(Color.AzulOscuro)
+                                    .cornerRadius(10)
+                            }
+                        }
+                    }
+                    .padding(24)
+                    .background(Color.white)
+                    .cornerRadius(16)
+                    .shadow(radius: 8)
+                }
+                .padding(20)
+                .frame(maxWidth: 370)
+            }
+        }
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+struct EditarProductoView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationStack {
+            EditarProductoView()
+        }
+    }
+}
