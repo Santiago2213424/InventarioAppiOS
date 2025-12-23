@@ -67,7 +67,6 @@ struct InicioView: View {
                             MenuCard(icon: "👥", title: "Proveedores")
                         }
 
-                        // 🔴 SALIR
                         Button {
                             onLogout()
                         } label: {

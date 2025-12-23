@@ -33,7 +33,7 @@ struct RecuperarContrasenaView: View {
                         icon: "email",
                         placeholder: "Correo electrónico",
                         text: $correo,
-                        isSecure: false
+                        fieldType: .email
                     )
                     .padding(.top, 32)
 

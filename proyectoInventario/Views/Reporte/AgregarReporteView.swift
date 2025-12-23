@@ -11,7 +11,6 @@ struct AgregarReporteView: View {
     var body: some View {
         ZStack {
 
-            // Fondo
             Image("fondologin")
                 .resizable()
                 .scaledToFill()

@@ -2,6 +2,8 @@ import SwiftUI
 
 struct LoginView: View {
 
+    @StateObject private var authVM = AuthViewModel()
+
     let onLoginSuccess: () -> Void
 
     @State private var email = ""
@@ -16,10 +18,11 @@ struct LoginView: View {
                 .scaledToFill()
                 .ignoresSafeArea()
 
-            ScrollView {
-                VStack {
+            VStack {
 
-                    Spacer(minLength: 35)
+                VStack(spacing: 20) {
+
+                    Spacer(minLength: 30)
 
                     Image("imageninicio")
                         .resizable()
@@ -30,80 +33,95 @@ struct LoginView: View {
 
                     Text("Inicia sesión")
                         .font(.system(size: 26, weight: .bold))
-                        .padding(.top, 8)
 
                     Text("Accede a tu cuenta para continuar")
                         .font(.system(size: 14))
                         .foregroundColor(.gray)
-                        .padding(.top, 4)
-
-                    CustomTextField(
-                        icon: "email",
-                        placeholder: "Correo electrónico",
-                        text: $email,
-                        isSecure: false
-                    )
-                    .padding(.top, 24)
-
-                    CustomTextField(
-                        icon: "lock",
-                        placeholder: "Contraseña",
-                        text: $password,
-                        isSecure: true,
-                        showToggle: true,
-                        mostrarPassword: $mostrarPassword
-                    )
-                    .padding(.top, 16)
-
-                    Button {
-                        onLoginSuccess()
-                    } label: {
-                        Text("Iniciar sesión")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 50)
-                            .background(Color.blue)
-                            .cornerRadius(12)
-                    }
-                    .padding(.top, 24)
-
-                    NavigationLink {
-                        RegisterView()
-                    } label: {
-                        Text("Crear una cuenta")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 50)
-                            .background(Color.red)
-                            .cornerRadius(12)
-                    }
-                    .padding(.top, 12)
-
-                    NavigationLink {
-                        RecuperarContrasenaView()
-                    } label: {
-                        Text("¿Olvidaste tu contraseña?")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(.blue)
-                    }
-                    .padding(.top, 10)
-
-                    Spacer(minLength: 30)
                 }
-                .frame(maxWidth: 370)
+
+                ScrollView {
+                    VStack(spacing: 12) {
+
+                        CustomTextField(
+                            icon: "email",
+                            placeholder: "Correo electrónico",
+                            text: $email,
+                            fieldType: .email
+                        )
+
+                        CustomTextField(
+                            icon: "lock",
+                            placeholder: "Contraseña",
+                            text: $password,
+                            fieldType: .password,
+                            showToggle: true,
+                            mostrarPassword: $mostrarPassword
+                        )
+
+                        Button {
+                            authVM.login(
+                                correo: email,
+                                password: password
+                            ) {
+                                onLoginSuccess()
+                            }
+                        } label: {
+                            Text("Iniciar sesión")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 50)
+                                .background(Color.blue)
+                                .cornerRadius(12)
+                        }
+                        .padding(.top, 24)
+
+                        NavigationLink {
+                            RegisterView()
+                        } label: {
+                            Text("Crear una cuenta")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 50)
+                                .background(Color.red)
+                                .cornerRadius(12)
+                        }
+
+                        NavigationLink {
+                            RecuperarContrasenaView()
+                        } label: {
+                            Text("¿Olvidaste tu contraseña?")
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundColor(.blue)
+                        }
+
+                        Spacer(minLength: 30)
+                    }
+                    .padding(.top, 16)
+                }
             }
+            .frame(maxWidth: 370)
+        }
+        .alert(
+            "Error de inicio de sesión",
+            isPresented: $authVM.showErrorAlert
+        ) {
+            Button("OK") {
+                authVM.errorMessage = nil
+            }
+        } message: {
+            Text(authVM.errorMessage ?? "")
         }
     }
 }
+
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            LoginView(
-                onLoginSuccess: {
-                }
-            )
+            LoginView {
+                print("Login exitoso")
+            }
         }
     }
 }

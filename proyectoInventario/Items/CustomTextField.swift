@@ -1,11 +1,17 @@
 import SwiftUI
 
 struct CustomTextField: View {
+    
+    enum CustomFieldType {
+        case normal
+        case email
+        case password
+    }
 
     let icon: String
     let placeholder: String
     @Binding var text: String
-    let isSecure: Bool
+    let fieldType: CustomFieldType
 
     var showToggle: Bool = false
     @Binding var mostrarPassword: Bool
@@ -14,14 +20,14 @@ struct CustomTextField: View {
         icon: String,
         placeholder: String,
         text: Binding<String>,
-        isSecure: Bool,
+        fieldType: CustomFieldType = .normal,
         showToggle: Bool = false,
         mostrarPassword: Binding<Bool> = .constant(false)
     ) {
         self.icon = icon
         self.placeholder = placeholder
         self._text = text
-        self.isSecure = isSecure
+        self.fieldType = fieldType
         self.showToggle = showToggle
         self._mostrarPassword = mostrarPassword
     }
@@ -33,13 +39,9 @@ struct CustomTextField: View {
                 .frame(width: 20, height: 20)
                 .padding(.leading, 12)
 
-            if isSecure && !mostrarPassword {
-                SecureField(placeholder, text: $text)
-            } else {
-                TextField(placeholder, text: $text)
-            }
+            fieldView
 
-            if showToggle {
+            if showToggle && fieldType == .password {
                 Button {
                     mostrarPassword.toggle()
                 } label: {
@@ -56,5 +58,32 @@ struct CustomTextField: View {
                 .stroke(Color.blue, lineWidth: 1.5)
         )
         .cornerRadius(12)
+    }
+    
+    @ViewBuilder
+    private var fieldView: some View {
+        switch fieldType {
+
+        case .password:
+            if mostrarPassword {
+                TextField(placeholder, text: $text)
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
+            } else {
+                SecureField(placeholder, text: $text)
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
+            }
+
+        case .email:
+            TextField(placeholder, text: $text)
+                .keyboardType(.emailAddress)
+                .textInputAutocapitalization(.never)
+                .disableAutocorrection(true)
+
+        case .normal:
+            TextField(placeholder, text: $text)
+                .textInputAutocapitalization(.words)
+        }
     }
 }
