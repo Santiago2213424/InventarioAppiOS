@@ -2,6 +2,8 @@ import SwiftUI
 
 struct AgregarCategoriaView: View {
 
+    @ObservedObject var viewModel: CategoriaViewModel
+
     @State private var nombreCategoria = ""
     @Environment(\.dismiss) private var dismiss
 
@@ -34,55 +36,56 @@ struct AgregarCategoriaView: View {
                     .cornerRadius(12)
                     .shadow(radius: 4)
 
-                ScrollView {
-                    VStack(spacing: 20) {
+                VStack(spacing: 20) {
 
-                        Text("Nueva Categoría")
-                            .font(.system(size: 19, weight: .bold))
-                            .foregroundColor(Color.AzulOscuro)
+                    Text("Nueva Categoría")
+                        .font(.system(size: 19, weight: .bold))
+                        .foregroundColor(Color.AzulOscuro)
 
-                        TextField("Nombre de la categoría", text: $nombreCategoria)
-                            .padding(14)
-                            .background(Color.white)
-                            .cornerRadius(12)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.AzulOscuro, lineWidth: 1)
-                            )
+                    TextField("Nombre de la categoría", text: $nombreCategoria)
+                        .padding(14)
+                        .background(Color.white)
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.AzulOscuro, lineWidth: 1)
+                        )
 
-                        HStack(spacing: 12) {
+                    HStack(spacing: 12) {
 
-                            Button {
-                                dismiss()
-                            } label: {
-                                Text("Cancelar")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(12)
-                                    .background(Color.red)
-                                    .cornerRadius(10)
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text("Cancelar")
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding(12)
+                                .background(Color.red)
+                                .cornerRadius(10)
+                        }
+
+                        Button {
+                            guard !nombreCategoria.trimmingCharacters(in: .whitespaces).isEmpty else {
+                                return
                             }
 
-                            Button {
-                                // guardar
-                                dismiss()
-                            } label: {
-                                Text("Guardar")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(12)
-                                    .background(Color.AzulOscuro)
-                                    .cornerRadius(10)
-                            }
+                            viewModel.agregarCategoria(nombre: nombreCategoria)
+                            dismiss()
+
+                        } label: {
+                            Text("Guardar")
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding(12)
+                                .background(Color.AzulOscuro)
+                                .cornerRadius(10)
                         }
                     }
-                    .padding(24)
-                    .background(Color.white)
-                    .cornerRadius(16)
-                    .shadow(radius: 8)
                 }
+                .padding(24)
+                .background(Color.white)
+                .cornerRadius(16)
+                .shadow(radius: 8)
             }
             .padding(20)
             .frame(maxWidth: 370)
@@ -91,8 +94,11 @@ struct AgregarCategoriaView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
+
 struct AgregarCategoriaView_Previews: PreviewProvider {
     static var previews: some View {
-        AgregarCategoriaView()
+        AgregarCategoriaView(
+            viewModel: CategoriaViewModel()
+        )
     }
 }

@@ -2,9 +2,17 @@ import SwiftUI
 
 struct EditarCategoriaView: View {
 
-    @State var nombreCategoria: String = "Bebidas"
+    let categoria: Categoria
+    @ObservedObject var viewModel: CategoriaViewModel
 
+    @State private var nombreCategoria: String
     @Environment(\.dismiss) private var dismiss
+
+    init(categoria: Categoria, viewModel: CategoriaViewModel) {
+        self.categoria = categoria
+        self.viewModel = viewModel
+        _nombreCategoria = State(initialValue: categoria.nombre)
+    }
 
     var body: some View {
         ZStack {
@@ -27,21 +35,10 @@ struct EditarCategoriaView: View {
                 .cornerRadius(12)
                 .shadow(radius: 6)
 
-                Image("imageninicio")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 300, height: 180)
-                    .clipped()
-                    .cornerRadius(12)
-                    .shadow(radius: 4)
-
                 ScrollView {
                     VStack(spacing: 20) {
 
-                        Text("Editar Categoría")
-                            .font(.system(size: 19, weight: .bold))
-                            .foregroundColor(Color.AzulOscuro)
-
+                        // txtfield categoria
                         TextField("Nombre de la categoría", text: $nombreCategoria)
                             .padding(14)
                             .background(Color.white)
@@ -50,35 +47,26 @@ struct EditarCategoriaView: View {
                                 RoundedRectangle(cornerRadius: 12)
                                     .stroke(Color.AzulOscuro, lineWidth: 1)
                             )
-
+                        
                         HStack(spacing: 12) {
 
-                            // Cancelar
-                            Button {
+                            Button("Cancelar") {
                                 dismiss()
-                            } label: {
-                                Text("Cancelar")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(12)
-                                    .background(Color.red)
-                                    .cornerRadius(10)
                             }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(Color.red)
+                            .cornerRadius(10)
 
-                            // Guardar
-                            Button {
-                                // guardar cambios
-                                dismiss()
-                            } label: {
-                                Text("Guardar")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(12)
-                                    .background(Color.AzulOscuro)
-                                    .cornerRadius(10)
+                            Button("Guardar") {
+                                guardarCambios()
                             }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(Color.AzulOscuro)
+                            .cornerRadius(10)
                         }
                     }
                     .padding(24)
@@ -90,12 +78,34 @@ struct EditarCategoriaView: View {
             .padding(20)
             .frame(maxWidth: 370)
         }
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func guardarCambios() {
+        let categoriaEditada = Categoria(
+            id: categoria.id,
+            nombre: nombreCategoria
+        )
+
+        viewModel.actualizarCategoria(categoriaEditada)
+        dismiss()
     }
 }
+
+
 struct EditarCategoriaView_Previews: PreviewProvider {
     static var previews: some View {
-        EditarCategoriaView()
+
+        let mockViewModel = CategoriaViewModel()
+        let mockCategoria = Categoria(
+            id: "demo-id",
+            nombre: "Bebidas"
+        )
+
+        NavigationStack {
+            EditarCategoriaView(
+                categoria: mockCategoria,
+                viewModel: mockViewModel
+            )
+        }
     }
 }
