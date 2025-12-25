@@ -1,20 +1,12 @@
 import SwiftUI
 
-struct Producto: Identifiable {
-    let id = UUID()
-    let nombre: String
-    let cantidad: Int
-    let precio: Double
-    let categoria: String
-}
-
 struct AltoStockView: View {
 
     let productos: [Producto] = [
-        Producto(nombre: "Arroz Costeño", cantidad: 50, precio: 4.50, categoria: "Abarrotes"),
-        Producto(nombre: "Leche Gloria", cantidad: 30, precio: 3.80, categoria: "Lácteos"),
-        Producto(nombre: "Gaseosa Inca Kola", cantidad: 40, precio: 2.50, categoria: "Bebidas"),
-        Producto(nombre: "Aceite Primor", cantidad: 25, precio: 9.90, categoria: "Abarrotes")
+        Producto(nombre: "Arroz Costeño", cantidad: 50, precio: 4.50, categoriaId: "Abarrotes"),
+        Producto(nombre: "Leche Gloria", cantidad: 30, precio: 3.80, categoriaId: "Lácteos"),
+        Producto(nombre: "Gaseosa Inca Kola", cantidad: 40, precio: 2.50, categoriaId: "Bebidas"),
+        Producto(nombre: "Aceite Primor", cantidad: 25, precio: 9.90, categoriaId: "Abarrotes")
     ]
 
     @State private var productoSeleccionado: Producto?
@@ -47,7 +39,7 @@ struct AltoStockView: View {
                                 nombre: producto.nombre,
                                 cantidad: producto.cantidad,
                                 precio: producto.precio,
-                                categoria: producto.categoria,
+                                categoria: producto.categoriaId,
                                 mostrarAcciones: true,
                                 onEditar: {
                                     productoSeleccionado = producto

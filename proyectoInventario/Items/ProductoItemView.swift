@@ -37,7 +37,7 @@ struct ProductoItemView: View {
                     }
 
                     Button {
-
+                        // eliminar
                     } label: {
                         Image(systemName: "trash")
                             .foregroundColor(.white)

@@ -3,15 +3,14 @@ import SwiftUI
 struct HistorialReportesDiaView: View {
 
     let reportesDia: [Reporte] = [
-        Reporte(nombre: "Venta arroz", fecha: "Hoy", monto: 120.00),
-        Reporte(nombre: "Venta leche", fecha: "Hoy", monto: 80.00),
-        Reporte(nombre: "Gasto limpieza", fecha: "Hoy", monto: -30.00),
-        Reporte(nombre: "Venta snacks", fecha: "Hoy", monto: 50.00)
+        Reporte(nombre: "Venta arroz", fecha: Date(), monto: 120.00),
+        Reporte(nombre: "Venta leche", fecha: Date(), monto: 80.00),
+        Reporte(nombre: "Gasto limpieza", fecha: Date(), monto: -30.00),
+        Reporte(nombre: "Venta snacks", fecha: Date(), monto: 50.00)
     ]
 
     var body: some View {
         ZStack {
-
             Image("fondologin")
                 .resizable()
                 .scaledToFill()
@@ -41,7 +40,6 @@ struct HistorialReportesDiaView: View {
 
                 Text("Ganancias: S/0.00   |   Gastos: S/0.00")
                     .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(.black)
                     .padding(8)
 
                 Spacer(minLength: 8)
@@ -52,6 +50,7 @@ struct HistorialReportesDiaView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
+
 
 struct HistorialReportesDiaView_Previews: PreviewProvider {
     static var previews: some View {

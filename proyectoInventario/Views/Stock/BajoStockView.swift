@@ -5,10 +5,10 @@ struct BajoStockView: View {
     @Environment(\.dismiss) private var dismiss
 
     let productos: [Producto] = [
-        Producto(nombre: "Azúcar Rubia", cantidad: 3, precio: 4.20, categoria: "Abarrotes"),
-        Producto(nombre: "Aceite Cocinero", cantidad: 2, precio: 9.50, categoria: "Abarrotes"),
-        Producto(nombre: "Leche Ideal", cantidad: 4, precio: 3.60, categoria: "Lácteos"),
-        Producto(nombre: "Gaseosa Pepsi", cantidad: 1, precio: 2.30, categoria: "Bebidas")
+        Producto(nombre: "Azúcar Rubia", cantidad: 3, precio: 4.20, categoriaId: "Abarrotes"),
+        Producto(nombre: "Aceite Cocinero", cantidad: 2, precio: 9.50, categoriaId: "Abarrotes"),
+        Producto(nombre: "Leche Ideal", cantidad: 4, precio: 3.60, categoriaId: "Lácteos"),
+        Producto(nombre: "Gaseosa Pepsi", cantidad: 1, precio: 2.30, categoriaId: "Bebidas")
     ]
 
     @State private var productoSeleccionado: Producto?
@@ -42,7 +42,7 @@ struct BajoStockView: View {
                                 nombre: producto.nombre,
                                 cantidad: producto.cantidad,
                                 precio: producto.precio,
-                                categoria: producto.categoria,
+                                categoria: producto.categoriaId,
                                 mostrarAcciones: true,
                                 onEditar: {
                                     productoSeleccionado = producto

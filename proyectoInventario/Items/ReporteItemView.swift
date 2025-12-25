@@ -1,15 +1,16 @@
 import SwiftUI
 
-struct Reporte: Identifiable {
-    let id = UUID()
-    let nombre: String
-    let fecha: String
-    let monto: Double
-}
-
 struct ReporteItemView: View {
 
     let reporte: Reporte
+
+    // Formatter reutilizable
+    private var fechaFormateada: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "es_PE")
+        formatter.dateFormat = "dd/MM/yyyy"
+        return formatter.string(from: reporte.fecha)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -18,7 +19,7 @@ struct ReporteItemView: View {
                 .font(.system(size: 18, weight: .bold))
                 .foregroundColor(.white)
 
-            Text("Fecha: \(reporte.fecha)")
+            Text("Fecha: \(fechaFormateada)")
                 .font(.system(size: 14))
                 .foregroundColor(.white)
 

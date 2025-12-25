@@ -1,9 +1,23 @@
 import SwiftUI
+import FirebaseAuth
 
 struct InicioView: View {
 
     let onLogout: () -> Void
-    let correoUsuario = "correo@ejemplo.com"
+    
+    var correoUsuario: String {
+            Auth.auth().currentUser?.email ?? " (correo) "
+        }
+    
+    func logout() {
+        do {
+            try Auth.auth().signOut()
+            onLogout()
+        } catch {
+            print("Error al cerrar sesión: \(error.localizedDescription)")
+        }
+    }
+
 
     var body: some View {
         ZStack {
@@ -81,7 +95,7 @@ struct InicioView: View {
                 }
             }
         }
-        .navigationBarBackButtonHidden(true) //ocultar boton back
+        // .navigationBarBackButtonHidden(true) //ocultar boton back del navigation
     }
 }
 
