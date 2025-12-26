@@ -1,21 +1,15 @@
 import FirebaseFirestore
-import FirebaseAuth
 
-class ReporteService {
+class ReporteService: BaseService {
 
-    private let db = Firestore.firestore()
     private let collection = "reportes"
 
-    func obtenerReportesUsuario(
+    func obtenerReportes(
         completion: @escaping (Result<[Reporte], Error>) -> Void
     ) {
-        guard let userId = Auth.auth().currentUser?.uid else { return }
-
-        db.collection(collection)
-            .whereField("userId", isEqualTo: userId)
+        userCollection(collection)
             .order(by: "fecha", descending: true)
             .getDocuments { snapshot, error in
-
                 if let error = error {
                     completion(.failure(error))
                     return
@@ -29,9 +23,12 @@ class ReporteService {
             }
     }
 
-    func agregarReporte(_ reporte: Reporte, completion: @escaping (Error?) -> Void) {
+    func agregarReporte(
+        _ reporte: Reporte,
+        completion: @escaping (Error?) -> Void
+    ) {
         do {
-            try db.collection(collection)
+            try userCollection(collection)
                 .document(reporte.id)
                 .setData(from: reporte)
             completion(nil)

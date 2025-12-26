@@ -1,32 +1,32 @@
 import FirebaseFirestore
 
-class ProductoService {
+class ProductoService: BaseService {
 
-    private let db = Firestore.firestore()
     private let collection = "productos"
 
     func obtenerProductos(
         completion: @escaping (Result<[Producto], Error>) -> Void
     ) {
-        db.collection(collection)
-            .getDocuments { snapshot, error in
-
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-
-                let productos = snapshot?.documents.compactMap {
-                    try? $0.data(as: Producto.self)
-                } ?? []
-
-                completion(.success(productos))
+        userCollection(collection).getDocuments { snapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
             }
+
+            let productos = snapshot?.documents.compactMap {
+                try? $0.data(as: Producto.self)
+            } ?? []
+
+            completion(.success(productos))
+        }
     }
 
-    func agregarProducto(_ producto: Producto, completion: @escaping (Error?) -> Void) {
+    func agregarProducto(
+        _ producto: Producto,
+        completion: @escaping (Error?) -> Void
+    ) {
         do {
-            try db.collection(collection)
+            try userCollection(collection)
                 .document(producto.id)
                 .setData(from: producto)
             completion(nil)
@@ -35,8 +35,11 @@ class ProductoService {
         }
     }
 
-    func eliminarProducto(id: String, completion: @escaping (Error?) -> Void) {
-        db.collection(collection)
+    func eliminarProducto(
+        id: String,
+        completion: @escaping (Error?) -> Void
+    ) {
+        userCollection(collection)
             .document(id)
             .delete(completion: completion)
     }

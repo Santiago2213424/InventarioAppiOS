@@ -1,21 +1,20 @@
 import FirebaseFirestore
 
-class CategoriaService {
+class CategoriaService: BaseService {
 
-    private let db = Firestore.firestore()
     private let collection = "categorias"
 
     func fetchCategorias(
         completion: @escaping (Result<[Categoria], Error>) -> Void
     ) {
-        db.collection(collection).getDocuments { snapshot, error in
+        userCollection(collection).getDocuments { snapshot, error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
 
-            let categorias = snapshot?.documents.compactMap { doc -> Categoria? in
-                try? doc.data(as: Categoria.self)
+            let categorias = snapshot?.documents.compactMap {
+                try? $0.data(as: Categoria.self)
             } ?? []
 
             completion(.success(categorias))
@@ -27,10 +26,23 @@ class CategoriaService {
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
         do {
-            try db.collection(collection)
+            try userCollection(collection)
                 .document(categoria.id)
                 .setData(from: categoria)
+            completion(.success(()))
+        } catch {
+            completion(.failure(error))
+        }
+    }
 
+    func updateCategoria(
+        _ categoria: Categoria,
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) {
+        do {
+            try userCollection(collection)
+                .document(categoria.id)
+                .setData(from: categoria, merge: true)
             completion(.success(()))
         } catch {
             completion(.failure(error))
@@ -41,28 +53,14 @@ class CategoriaService {
         id: String,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        db.collection(collection).document(id).delete { error in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success(()))
+        userCollection(collection)
+            .document(id)
+            .delete { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
             }
-        }
     }
-    
-    func updateCategoria(
-        _ categoria: Categoria,
-        completion: @escaping (Result<Void, Error>) -> Void
-    ) {
-        do {
-            try db.collection(collection)
-                .document(categoria.id)
-                .setData(from: categoria, merge: true)
-
-            completion(.success(()))
-        } catch {
-            completion(.failure(error))
-        }
-    }
-
 }

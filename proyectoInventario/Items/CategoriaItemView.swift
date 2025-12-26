@@ -4,6 +4,7 @@ struct CategoriaItemView: View {
 
     let nombre: String
     let mostrarAcciones: Bool
+    let onTap: () -> Void
     let onLongPress: () -> Void
     let onEditar: () -> Void
     let onEliminar: () -> Void
@@ -42,6 +43,9 @@ struct CategoriaItemView: View {
         .cornerRadius(12)
         .shadow(radius: 5)
         .padding(.bottom, 10)
+        .onTapGesture {
+            onTap()
+        }
         .onLongPressGesture {
             onLongPress()
         }

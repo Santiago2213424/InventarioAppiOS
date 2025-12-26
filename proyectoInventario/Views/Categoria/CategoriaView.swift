@@ -5,6 +5,7 @@ struct CategoriaView: View {
     @StateObject private var viewModel = CategoriaViewModel()
 
     @State private var categoriaSeleccionada: Categoria?
+    @State private var categoriaParaProductos: Categoria?
     @State private var categoriaActiva: Categoria?
     @State private var mostrarAlertaEliminar = false
     @State private var categoriaAEliminar: Categoria?
@@ -34,6 +35,9 @@ struct CategoriaView: View {
                             CategoriaItemView(
                                 nombre: categoria.nombre,
                                 mostrarAcciones: categoriaActiva?.id == categoria.id,
+                                onTap: {
+                                    categoriaParaProductos = categoria
+                                },
                                 onLongPress: {
                                     categoriaActiva = categoria
                                 },
@@ -59,15 +63,26 @@ struct CategoriaView: View {
                 Image(systemName: "plus")
             }
         }
+
+        // editar categoria
         .navigationDestination(item: $categoriaSeleccionada) { categoria in
             EditarCategoriaView(
                 categoria: categoria,
                 viewModel: viewModel
             )
         }
+
+        // productos x categoria
+        .navigationDestination(item: $categoriaParaProductos) { categoria in
+            ProductoView(
+                categoria: categoria
+            )
+        }
+
         .onAppear {
             viewModel.cargarCategorias()
         }
+
         .alert("Eliminar categoría",
                isPresented: $mostrarAlertaEliminar,
                presenting: categoriaAEliminar) { categoria in
