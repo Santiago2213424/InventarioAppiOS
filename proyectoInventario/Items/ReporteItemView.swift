@@ -15,7 +15,7 @@ struct ReporteItemView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
 
-            Text("Producto: \(reporte.nombre)")
+            Text("Detalle: \(reporte.detalle)")
                 .font(.system(size: 18, weight: .bold))
                 .foregroundColor(.white)
 

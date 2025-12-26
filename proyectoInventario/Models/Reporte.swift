@@ -2,18 +2,18 @@ import Foundation
 
 struct Reporte: Identifiable, Codable, Hashable {
     let id: String
-    let nombre: String
+    let detalle: String
     let fecha: Date
     let monto: Double
 
     init(
         id: String = UUID().uuidString,
-        nombre: String,
+        detalle: String,
         fecha: Date,
         monto: Double
     ) {
         self.id = id
-        self.nombre = nombre
+        self.detalle = detalle
         self.fecha = fecha
         self.monto = monto
     }

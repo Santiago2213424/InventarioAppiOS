@@ -73,7 +73,7 @@ struct InicioView: View {
                             MenuCard(icon: "🔔", title: "Stock")
                         }
 
-                        NavigationLink { AgregarReporteView() } label: {
+                        NavigationLink { AgregarReporteView(viewModel: ReporteViewModel()) } label: {
                             MenuCard(icon: "📊", title: "Reporte")
                         }
 
@@ -98,16 +98,3 @@ struct InicioView: View {
         // .navigationBarBackButtonHidden(true) //ocultar boton back del navigation
     }
 }
-
-
-struct InicioView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            InicioView(
-                onLogout: {
-                }
-            )
-        }
-    }
-}
-

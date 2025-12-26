@@ -2,9 +2,18 @@ import SwiftUI
 
 struct AgregarReporteView: View {
 
-    @State private var nombre = ""
+    @ObservedObject var viewModel: ReporteViewModel
+
+    @State private var detalle = ""
     @State private var monto = ""
     @State private var tipoSeleccionado = "Ingreso"
+
+    @State private var mostrarAlerta = false
+    @State private var mensajeAlerta = ""
+
+    // navegación
+    @State private var irReporteDia = false
+    @State private var irReporteFecha = false
 
     let tipos = ["Ingreso", "Gasto"]
 
@@ -32,7 +41,7 @@ struct AgregarReporteView: View {
 
                 VStack(spacing: 12) {
 
-                    TextField("Nombre del producto o gasto", text: $nombre)
+                    TextField("Detalle", text: $detalle)
                         .padding(10)
                         .background(Color(.systemGray6))
                         .cornerRadius(8)
@@ -43,7 +52,6 @@ struct AgregarReporteView: View {
                         .background(Color(.systemGray6))
                         .cornerRadius(8)
 
-                    // Tipo
                     Picker("Tipo", selection: $tipoSeleccionado) {
                         ForEach(tipos, id: \.self) { tipo in
                             Text(tipo)
@@ -52,20 +60,20 @@ struct AgregarReporteView: View {
                     .pickerStyle(.segmented)
                     .padding(.top, 8)
 
-                    Button(action: {
-                        // lógica guardar (mock)
-                    }) {
-                        Text("Guardar")
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 45)
-                            .background(Color.AzulOscuro)
-                            .cornerRadius(8)
+                    // GUARDAR
+                    Button("Guardar") {
+                        guardarReporte()
                     }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 45)
+                    .background(Color.AzulOscuro)
+                    .cornerRadius(8)
                     .padding(.top, 8)
 
-                    NavigationLink {
-                        HistorialReportesDiaView()
+                    // BOTONES REPORTES
+                    Button {
+                        irReporteDia = true
                     } label: {
                         Text("📅 Ver Reportes de Hoy")
                             .foregroundColor(.white)
@@ -74,11 +82,9 @@ struct AgregarReporteView: View {
                             .background(Color.green)
                             .cornerRadius(8)
                     }
-                    .padding(.top, 4)
 
-
-                    NavigationLink {
-                        HistorialReportesFechaView()
+                    Button {
+                        irReporteFecha = true
                     } label: {
                         Text("📆 Ver Historial por Fecha")
                             .foregroundColor(.black)
@@ -87,9 +93,6 @@ struct AgregarReporteView: View {
                             .background(Color.yellow)
                             .cornerRadius(8)
                     }
-                    .padding(.top, 4)
-
-
                 }
                 .padding(20)
                 .background(Color.white)
@@ -101,15 +104,50 @@ struct AgregarReporteView: View {
             }
             .frame(maxWidth: 370)
         }
+        // navegacion
+        .navigationDestination(isPresented: $irReporteDia) {
+            HistorialReportesDiaView(viewModel: viewModel)
+        }
+        .navigationDestination(isPresented: $irReporteFecha) {
+            HistorialReportesFechaView(viewModel: viewModel)
+        }
+        .alert("Error", isPresented: $mostrarAlerta) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(mensajeAlerta)
+        }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
     }
-}
 
-struct AgregarReporteView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            AgregarReporteView()
+    private func guardarReporte() {
+
+        let detalleLimpio = detalle.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !detalleLimpio.isEmpty else {
+            mensajeAlerta = "El detalle no puede estar vacío."
+            mostrarAlerta = true
+            return
         }
+
+        guard let montoDouble = Double(monto), montoDouble > 0 else {
+            mensajeAlerta = "El monto debe ser un número válido."
+            mostrarAlerta = true
+            return
+        }
+
+        let montoFinal = tipoSeleccionado == "Gasto"
+            ? -montoDouble
+            : montoDouble
+
+        let nuevoReporte = Reporte(
+            detalle: detalleLimpio,
+            fecha: Date(),
+            monto: montoFinal
+        )
+
+        viewModel.agregarReporte(nuevoReporte)
+
+        irReporteDia = true
     }
 }
