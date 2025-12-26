@@ -22,9 +22,12 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="fondologin" translatesAutoresizingMaskIntoConstraints="NO" id="eKS-FB-WIX">
-                                <rect key="frame" x="-6" y="-6" width="407" height="858"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="fondologin" translatesAutoresizingMaskIntoConstraints="NO" id="eKS-FB-WIX">
+                                <rect key="frame" x="-13.666666666666657" y="-24" width="420.33333333333326" height="900"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="900" id="reC-oC-ZpB"/>
+                                    <constraint firstAttribute="width" constant="420" id="vhk-Pt-Jhj"/>
+                                </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="imageninicio" translatesAutoresizingMaskIntoConstraints="NO" id="Lhm-hc-VRo">
                                 <rect key="frame" x="21.666666666666657" y="301" width="350" height="250"/>
@@ -38,10 +41,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Bcu-3y-fUS" firstAttribute="centerX" secondItem="obG-Y5-kRd" secondAttribute="centerX" id="5cz-MP-9tL"/>
+                            <constraint firstItem="eKS-FB-WIX" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="9ZV-PA-5gr"/>
+                            <constraint firstItem="eKS-FB-WIX" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="DFl-WR-Xwg"/>
                             <constraint firstItem="Lhm-hc-VRo" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="J6E-Hd-yim"/>
                             <constraint firstItem="Lhm-hc-VRo" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="N6D-eZ-8MW"/>
                             <constraint firstItem="obG-Y5-kRd" firstAttribute="leading" secondItem="Bcu-3y-fUS" secondAttribute="leading" constant="20" symbolic="YES" id="SfN-ll-jLj"/>
                             <constraint firstAttribute="bottom" secondItem="obG-Y5-kRd" secondAttribute="bottom" constant="20" id="Y44-ml-fuU"/>
+                            <constraint firstItem="eKS-FB-WIX" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="lpI-5z-dx7"/>
+                            <constraint firstItem="eKS-FB-WIX" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="x0H-OQ-IKS"/>
                         </constraints>
                     </view>
                 </viewController>

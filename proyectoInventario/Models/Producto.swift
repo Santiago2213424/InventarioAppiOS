@@ -22,3 +22,9 @@ struct Producto: Identifiable, Codable, Hashable {
         self.categoriaId = categoriaId
     }
 }
+
+struct ProductoNavegacion: Identifiable, Hashable {
+    let id = UUID()
+    let producto: Producto
+    let categoria: Categoria
+}

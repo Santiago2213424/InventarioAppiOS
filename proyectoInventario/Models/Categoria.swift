@@ -13,3 +13,4 @@ struct Categoria: Identifiable, Codable, Hashable {
         self.nombre = nombre
     }
 }
+

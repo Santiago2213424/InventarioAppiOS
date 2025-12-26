@@ -37,6 +37,18 @@ class ProductoViewModel: ObservableObject {
         }
     }
 
+    func actualizarProducto(_ producto: Producto) {
+        service.actualizarProducto(producto) { [weak self] error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    self?.errorMessage = error.localizedDescription
+                } else {
+                    self?.cargarProductos()
+                }
+            }
+        }
+    }
+
     func eliminarProducto(id: String) {
         service.eliminarProducto(id: id) { [weak self] error in
             DispatchQueue.main.async {

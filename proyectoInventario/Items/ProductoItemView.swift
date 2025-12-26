@@ -9,6 +9,7 @@ struct ProductoItemView: View {
 
     var mostrarAcciones: Bool = false
     var onEditar: () -> Void
+    let onEliminar: () -> Void
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -37,7 +38,7 @@ struct ProductoItemView: View {
                     }
 
                     Button {
-                        // eliminar
+                        onEliminar()
                     } label: {
                         Image(systemName: "trash")
                             .foregroundColor(.white)

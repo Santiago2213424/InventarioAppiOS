@@ -2,18 +2,33 @@ import SwiftUI
 
 struct BajoStockView: View {
 
-    @Environment(\.dismiss) private var dismiss
+    @StateObject private var productoVM = ProductoViewModel()
+    @StateObject private var categoriaVM = CategoriaViewModel()
 
-    let productos: [Producto] = [
-        Producto(nombre: "Azúcar Rubia", cantidad: 3, precio: 4.20, categoriaId: "Abarrotes"),
-        Producto(nombre: "Aceite Cocinero", cantidad: 2, precio: 9.50, categoriaId: "Abarrotes"),
-        Producto(nombre: "Leche Ideal", cantidad: 4, precio: 3.60, categoriaId: "Lácteos"),
-        Producto(nombre: "Gaseosa Pepsi", cantidad: 1, precio: 2.30, categoriaId: "Bebidas")
-    ]
+    @State private var destino: ProductoNavegacion?
 
-    @State private var productoSeleccionado: Producto?
-    @State private var navegarEditar = false
-    
+    @State private var mostrarAlertaEliminar = false
+    @State private var productoAEliminar: Producto?
+
+    private var productosBajoStock: [Producto] {
+        productoVM.productos.filter { $0.cantidad <= 5 }
+    }
+
+    private func nombreCategoria(for categoriaId: String) -> String {
+        categoriaVM.categorias.first { $0.id == categoriaId }?.nombre ?? "Sin categoría"
+    }
+
+    private func editarProducto(_ producto: Producto) {
+        guard let categoria = categoriaVM.categorias.first(
+            where: { $0.id == producto.categoriaId }
+        ) else { return }
+
+        destino = ProductoNavegacion(
+            producto: producto,
+            categoria: categoria
+        )
+    }
+
     var body: some View {
         ZStack {
             Image("fondologin")
@@ -23,55 +38,66 @@ struct BajoStockView: View {
 
             VStack(spacing: 12) {
 
-                VStack {
-                    Text("📉 BAJO STOCK")
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding(.vertical, 14)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.AzulOscuro)
-                        .cornerRadius(12)
-                        .padding(.horizontal, 12)
-                        .padding(.top, 12)
-                }
+                Text("📉 BAJO STOCK")
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding(.vertical, 14)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.AzulOscuro)
+                    .cornerRadius(12)
+                    .padding()
 
                 ScrollView {
                     VStack(spacing: 8) {
-                        ForEach(productos) { producto in
+                        ForEach(productosBajoStock) { producto in
                             ProductoItemView(
                                 nombre: producto.nombre,
                                 cantidad: producto.cantidad,
                                 precio: producto.precio,
-                                categoria: producto.categoriaId,
+                                categoria: nombreCategoria(for: producto.categoriaId),
                                 mostrarAcciones: true,
                                 onEditar: {
-                                    productoSeleccionado = producto
-                                    navegarEditar = true
+                                    editarProducto(producto)
+                                },
+                                onEliminar: {
+                                    productoAEliminar = producto
+                                    mostrarAlertaEliminar = true
                                 }
                             )
                         }
-                        Spacer(minLength: 80)
                     }
                     .padding(.horizontal, 8)
                 }
             }
             .frame(maxWidth: 370)
-            
-            .navigationDestination(isPresented: $navegarEditar) {
-                if let Producto = productoSeleccionado {
-                    EditarProductoView()
-                }
-            }
         }
-        .navigationTitle("")
+        .navigationDestination(item: $destino) { nav in
+            EditarProductoView(
+                producto: nav.producto,
+                categoria: nav.categoria,
+                viewModel: productoVM
+            )
+        }
+        .onAppear {
+            productoVM.cargarProductos()
+            categoriaVM.cargarCategorias()
+        }
         .navigationBarTitleDisplayMode(.inline)
-    }
-}
 
-struct BajoStockView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            BajoStockView()
+        .alert(
+            "Eliminar producto",
+            isPresented: $mostrarAlertaEliminar,
+            presenting: productoAEliminar
+        ) { producto in
+
+            Button("Eliminar", role: .destructive) {
+                productoVM.eliminarProducto(id: producto.id)
+            }
+
+            Button("Cancelar", role: .cancel) { }
+
+        } message: { producto in
+            Text("¿Seguro que deseas eliminar el producto \"\(producto.nombre)\"?")
         }
     }
 }

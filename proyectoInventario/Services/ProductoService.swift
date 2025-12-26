@@ -35,6 +35,20 @@ class ProductoService: BaseService {
         }
     }
 
+    func actualizarProducto(
+        _ producto: Producto,
+        completion: @escaping (Error?) -> Void
+    ) {
+        do {
+            try userCollection(collection)
+                .document(producto.id)
+                .setData(from: producto, merge: true)
+            completion(nil)
+        } catch {
+            completion(error)
+        }
+    }
+
     func eliminarProducto(
         id: String,
         completion: @escaping (Error?) -> Void

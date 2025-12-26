@@ -1,30 +1,15 @@
 import SwiftUI
 
-struct EditarProductoView: View {
+struct AgregarProductoView: View {
 
-    let producto: Producto
     let categoria: Categoria
     @ObservedObject var viewModel: ProductoViewModel
 
-    @State private var nombre: String
-    @State private var cantidad: String
-    @State private var precio: String
+    @State private var nombre = ""
+    @State private var cantidad = ""
+    @State private var precio = ""
 
     @Environment(\.dismiss) private var dismiss
-
-    init(
-        producto: Producto,
-        categoria: Categoria,
-        viewModel: ProductoViewModel
-    ) {
-        self.producto = producto
-        self.categoria = categoria
-        self.viewModel = viewModel
-
-        _nombre = State(initialValue: producto.nombre)
-        _cantidad = State(initialValue: String(producto.cantidad))
-        _precio = State(initialValue: String(format: "%.2f", producto.precio))
-    }
 
     var body: some View {
         ZStack {
@@ -37,16 +22,14 @@ struct EditarProductoView: View {
             ScrollView {
                 VStack(spacing: 16) {
 
-                    VStack {
-                        Text("EDITAR PRODUCTO")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(16)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .background(Color.AzulOscuro)
-                    .cornerRadius(12)
-                    .shadow(radius: 6)
+                    Text("AGREGAR PRODUCTO")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(16)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.AzulOscuro)
+                        .cornerRadius(12)
+                        .shadow(radius: 6)
 
                     Image("imageninicio")
                         .resizable()
@@ -56,13 +39,13 @@ struct EditarProductoView: View {
                         .cornerRadius(12)
                         .shadow(radius: 4)
 
-                    VStack(spacing: 20) {
+                    VStack(spacing: 16) {
 
-                        Text("Editar Producto")
+                        Text("Nuevo Producto")
                             .font(.system(size: 19, weight: .bold))
                             .foregroundColor(Color.AzulOscuro)
 
-                        TextField("Nombre del producto", text: $nombre)
+                        TextField("Nombre del Producto", text: $nombre)
                             .padding(14)
                             .background(Color.white)
                             .cornerRadius(12)
@@ -90,7 +73,8 @@ struct EditarProductoView: View {
                                 RoundedRectangle(cornerRadius: 12)
                                     .stroke(Color.AzulOscuro, lineWidth: 1)
                             )
-
+                        
+                        // btns
                         HStack(spacing: 12) {
 
                             Button("Cancelar") {
@@ -103,7 +87,7 @@ struct EditarProductoView: View {
                             .cornerRadius(10)
 
                             Button("Guardar") {
-                                guardarCambios()
+                                guardarProducto()
                             }
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
@@ -121,28 +105,25 @@ struct EditarProductoView: View {
                 .frame(maxWidth: 370)
             }
         }
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
     }
 
-    private func guardarCambios() {
+    private func guardarProducto() {
         guard
             let cantidadInt = Int(cantidad),
-            let precioDouble = Double(precio)
+            let precioDouble = Double(precio),
+            !nombre.isEmpty
         else {
             return
         }
 
-        let productoEditado = Producto(
-            id: producto.id,
+        let nuevoProducto = Producto(
             nombre: nombre,
             cantidad: cantidadInt,
             precio: precioDouble,
             categoriaId: categoria.id
         )
 
-        viewModel.actualizarProducto(productoEditado)
+        viewModel.agregarProducto(nuevoProducto)
         dismiss()
     }
 }
-

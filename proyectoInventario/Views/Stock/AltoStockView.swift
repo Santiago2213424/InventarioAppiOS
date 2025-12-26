@@ -2,19 +2,35 @@ import SwiftUI
 
 struct AltoStockView: View {
 
-    let productos: [Producto] = [
-        Producto(nombre: "Arroz Costeño", cantidad: 50, precio: 4.50, categoriaId: "Abarrotes"),
-        Producto(nombre: "Leche Gloria", cantidad: 30, precio: 3.80, categoriaId: "Lácteos"),
-        Producto(nombre: "Gaseosa Inca Kola", cantidad: 40, precio: 2.50, categoriaId: "Bebidas"),
-        Producto(nombre: "Aceite Primor", cantidad: 25, precio: 9.90, categoriaId: "Abarrotes")
-    ]
+    @StateObject private var productoVM = ProductoViewModel()
+    @StateObject private var categoriaVM = CategoriaViewModel()
 
-    @State private var productoSeleccionado: Producto?
-    @State private var navegarEditar = false
+    @State private var destino: ProductoNavegacion?
+
+    @State private var mostrarAlertaEliminar = false
+    @State private var productoAEliminar: Producto?
+
+    private var productosAltoStock: [Producto] {
+        productoVM.productos.filter { $0.cantidad >= 50 }
+    }
+
+    private func nombreCategoria(for categoriaId: String) -> String {
+        categoriaVM.categorias.first { $0.id == categoriaId }?.nombre ?? "Sin categoría"
+    }
+
+    private func editarProducto(_ producto: Producto) {
+        guard let categoria = categoriaVM.categorias.first(
+            where: { $0.id == producto.categoriaId }
+        ) else { return }
+
+        destino = ProductoNavegacion(
+            producto: producto,
+            categoria: categoria
+        )
+    }
 
     var body: some View {
         ZStack {
-
             Image("fondologin")
                 .resizable()
                 .scaledToFill()
@@ -29,48 +45,59 @@ struct AltoStockView: View {
                     .frame(maxWidth: .infinity)
                     .background(Color.AzulOscuro)
                     .cornerRadius(12)
-                    .padding(.horizontal, 12)
-                    .padding(.top, 12)
+                    .padding()
 
                 ScrollView {
                     VStack(spacing: 8) {
-                        ForEach(productos) { producto in
+                        ForEach(productosAltoStock) { producto in
                             ProductoItemView(
                                 nombre: producto.nombre,
                                 cantidad: producto.cantidad,
                                 precio: producto.precio,
-                                categoria: producto.categoriaId,
+                                categoria: nombreCategoria(for: producto.categoriaId),
                                 mostrarAcciones: true,
                                 onEditar: {
-                                    productoSeleccionado = producto
-                                    navegarEditar = true
+                                    editarProducto(producto)
+                                },
+                                onEliminar: {
+                                    productoAEliminar = producto
+                                    mostrarAlertaEliminar = true
                                 }
                             )
                         }
-                        Spacer(minLength: 80)
                     }
                     .padding(.horizontal, 8)
                 }
             }
             .frame(maxWidth: 370)
-
-
-            .navigationDestination(isPresented: $navegarEditar) {
-                if let producto = productoSeleccionado {
-                    EditarProductoView()
-                }
-            }
         }
-        .navigationTitle("")
+        .navigationDestination(item: $destino) { nav in
+            EditarProductoView(
+                producto: nav.producto,
+                categoria: nav.categoria,
+                viewModel: productoVM
+            )
+        }
+        .onAppear {
+            productoVM.cargarProductos()
+            categoriaVM.cargarCategorias()
+        }
         .navigationBarTitleDisplayMode(.inline)
-    }
-}
 
+        .alert(
+            "Eliminar producto",
+            isPresented: $mostrarAlertaEliminar,
+            presenting: productoAEliminar
+        ) { producto in
 
-struct AltoStockView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            AltoStockView()
+            Button("Eliminar", role: .destructive) {
+                productoVM.eliminarProducto(id: producto.id)
+            }
+
+            Button("Cancelar", role: .cancel) { }
+
+        } message: { producto in
+            Text("¿Seguro que deseas eliminar el producto \"\(producto.nombre)\"?")
         }
     }
 }
