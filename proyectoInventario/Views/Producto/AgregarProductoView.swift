@@ -9,6 +9,9 @@ struct AgregarProductoView: View {
     @State private var cantidad = ""
     @State private var precio = ""
 
+    @State private var mostrarAlerta = false
+    @State private var mensajeAlerta = ""
+
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -73,8 +76,7 @@ struct AgregarProductoView: View {
                                 RoundedRectangle(cornerRadius: 12)
                                     .stroke(Color.AzulOscuro, lineWidth: 1)
                             )
-                        
-                        // btns
+
                         HStack(spacing: 12) {
 
                             Button("Cancelar") {
@@ -105,19 +107,48 @@ struct AgregarProductoView: View {
                 .frame(maxWidth: 370)
             }
         }
+        .alert("Error", isPresented: $mostrarAlerta) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(mensajeAlerta)
+        }
+        .onAppear {
+            if viewModel.productos.isEmpty {
+                viewModel.cargarProductos()
+            }
+        }
     }
 
     private func guardarProducto() {
-        guard
-            let cantidadInt = Int(cantidad),
-            let precioDouble = Double(precio),
-            !nombre.isEmpty
-        else {
+
+        let nombreLimpio = nombre.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !nombreLimpio.isEmpty else {
+            mensajeAlerta = "El nombre del producto no puede estar vacío."
+            mostrarAlerta = true
+            return
+        }
+
+        guard let cantidadInt = Int(cantidad), cantidadInt >= 0 else {
+            mensajeAlerta = "La cantidad debe ser un número válido."
+            mostrarAlerta = true
+            return
+        }
+
+        guard let precioDouble = Double(precio), precioDouble >= 0 else {
+            mensajeAlerta = "El precio debe ser un número válido."
+            mostrarAlerta = true
+            return
+        }
+
+        if viewModel.existeProducto(nombre: nombreLimpio, categoriaId: categoria.id) {
+            mensajeAlerta = "El producto \"\(nombreLimpio)\" ya existe en esta categoría."
+            mostrarAlerta = true
             return
         }
 
         let nuevoProducto = Producto(
-            nombre: nombre,
+            nombre: nombreLimpio,
             cantidad: cantidadInt,
             precio: precioDouble,
             categoriaId: categoria.id

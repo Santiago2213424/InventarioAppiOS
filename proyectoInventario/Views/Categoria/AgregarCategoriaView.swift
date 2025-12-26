@@ -5,7 +5,21 @@ struct AgregarCategoriaView: View {
     @ObservedObject var viewModel: CategoriaViewModel
 
     @State private var nombreCategoria = ""
+    @State private var mostrarAlerta = false
+    @State private var mensajeAlerta = ""
+
     @Environment(\.dismiss) private var dismiss
+
+    private func categoriaYaExiste(nombre: String) -> Bool {
+        let nombreNormalizado = nombre
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+
+        return viewModel.categorias.contains {
+            $0.nombre.trimmingCharacters(in: .whitespacesAndNewlines)
+                .lowercased() == nombreNormalizado
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -17,16 +31,14 @@ struct AgregarCategoriaView: View {
 
             VStack(spacing: 16) {
 
-                VStack {
-                    Text("AGREGAR CATEGORÍA")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding(16)
-                        .frame(maxWidth: .infinity)
-                }
-                .background(Color.AzulOscuro)
-                .cornerRadius(12)
-                .shadow(radius: 6)
+                Text("AGREGAR CATEGORÍA")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding(16)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.AzulOscuro)
+                    .cornerRadius(12)
+                    .shadow(radius: 6)
 
                 Image("imageninicio")
                     .resizable()
@@ -65,11 +77,22 @@ struct AgregarCategoriaView: View {
                         }
 
                         Button {
-                            guard !nombreCategoria.trimmingCharacters(in: .whitespaces).isEmpty else {
+                            let nombreLimpio = nombreCategoria
+                                .trimmingCharacters(in: .whitespacesAndNewlines)
+
+                            guard !nombreLimpio.isEmpty else {
+                                mensajeAlerta = "El nombre de la categoría no puede estar vacío."
+                                mostrarAlerta = true
                                 return
                             }
 
-                            viewModel.agregarCategoria(nombre: nombreCategoria)
+                            guard !categoriaYaExiste(nombre: nombreLimpio) else {
+                                mensajeAlerta = "La categoría \"\(nombreLimpio)\" ya existe."
+                                mostrarAlerta = true
+                                return
+                            }
+
+                            viewModel.agregarCategoria(nombre: nombreLimpio)
                             dismiss()
 
                         } label: {
@@ -92,13 +115,15 @@ struct AgregarCategoriaView: View {
         }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-struct AgregarCategoriaView_Previews: PreviewProvider {
-    static var previews: some View {
-        AgregarCategoriaView(
-            viewModel: CategoriaViewModel()
-        )
+        .alert("Error", isPresented: $mostrarAlerta) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(mensajeAlerta)
+        }
+        .onAppear {
+            if viewModel.categorias.isEmpty {
+                viewModel.cargarCategorias()
+            }
+        }
     }
 }

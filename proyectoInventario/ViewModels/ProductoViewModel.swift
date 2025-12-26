@@ -25,7 +25,24 @@ class ProductoViewModel: ObservableObject {
         }
     }
 
+    func existeProducto(nombre: String, categoriaId: String) -> Bool {
+        let nombreNormalizado = nombre
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+
+        return productos.contains {
+            $0.categoriaId == categoriaId &&
+            $0.nombre.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == nombreNormalizado
+        }
+    }
+
     func agregarProducto(_ producto: Producto) {
+
+        if existeProducto(nombre: producto.nombre, categoriaId: producto.categoriaId) {
+            errorMessage = "Ya existe un producto con ese nombre en esta categoría"
+            return
+        }
+
         service.agregarProducto(producto) { [weak self] error in
             DispatchQueue.main.async {
                 if let error = error {
@@ -38,6 +55,22 @@ class ProductoViewModel: ObservableObject {
     }
 
     func actualizarProducto(_ producto: Producto) {
+
+        let nombreNormalizado = producto.nombre
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+
+        let duplicado = productos.contains {
+            $0.id != producto.id &&
+            $0.categoriaId == producto.categoriaId &&
+            $0.nombre.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == nombreNormalizado
+        }
+
+        if duplicado {
+            errorMessage = "Ya existe otro producto con ese nombre en esta categoría"
+            return
+        }
+
         service.actualizarProducto(producto) { [weak self] error in
             DispatchQueue.main.async {
                 if let error = error {
