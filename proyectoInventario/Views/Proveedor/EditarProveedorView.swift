@@ -2,10 +2,20 @@ import SwiftUI
 
 struct EditarProveedorView: View {
 
-    @State private var nombreProveedor: String = "Proveedor San Jorge"
-    @State private var numeroProveedor: String = "987654321"
+    let proveedor: Proveedor
+    @ObservedObject var viewModel: ProveedorViewModel
+
+    @State private var nombreProveedor: String
+    @State private var numeroProveedor: String
 
     @Environment(\.dismiss) private var dismiss
+
+    init(proveedor: Proveedor, viewModel: ProveedorViewModel) {
+        self.proveedor = proveedor
+        self.viewModel = viewModel
+        _nombreProveedor = State(initialValue: proveedor.nombre)
+        _numeroProveedor = State(initialValue: proveedor.telefono)
+    }
 
     var body: some View {
         ZStack {
@@ -17,16 +27,15 @@ struct EditarProveedorView: View {
 
             VStack(spacing: 16) {
 
-                VStack {
-                    Text("EDITAR PROVEEDOR")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding(16)
-                        .frame(maxWidth: .infinity)
-                }
-                .background(Color.AzulOscuro)
-                .cornerRadius(12)
-                .shadow(radius: 6)
+                // HEADER
+                Text("EDITAR PROVEEDOR")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding(16)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.AzulOscuro)
+                    .cornerRadius(12)
+                    .shadow(radius: 6)
 
                 Image("imageninicio")
                     .resizable()
@@ -64,30 +73,23 @@ struct EditarProveedorView: View {
 
                         HStack(spacing: 12) {
 
-                            Button {
+                            Button("Cancelar") {
                                 dismiss()
-                            } label: {
-                                Text("Cancelar")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(12)
-                                    .background(Color.red)
-                                    .cornerRadius(10)
                             }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(Color.red)
+                            .cornerRadius(10)
 
-                            Button {
-                                // actualizar proveedor
-                                dismiss()
-                            } label: {
-                                Text("Actualizar")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(12)
-                                    .background(Color.AzulOscuro)
-                                    .cornerRadius(10)
+                            Button("Guardar") {
+                                guardarCambios()
                             }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(Color.AzulOscuro)
+                            .cornerRadius(10)
                         }
                     }
                     .padding(24)
@@ -102,11 +104,15 @@ struct EditarProveedorView: View {
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
     }
-}
-struct EditarProveedorView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            EditarProveedorView()
-        }
+
+    private func guardarCambios() {
+        let proveedorEditado = Proveedor(
+            id: proveedor.id,
+            nombre: nombreProveedor,
+            telefono: numeroProveedor
+        )
+
+        viewModel.actualizarProveedor(proveedorEditado)
+        dismiss()
     }
 }

@@ -24,6 +24,7 @@ struct EditarCategoriaView: View {
 
             VStack(spacing: 16) {
 
+                // HEADER
                 VStack {
                     Text("EDITAR CATEGORÍA")
                         .font(.system(size: 18, weight: .bold))
@@ -35,10 +36,21 @@ struct EditarCategoriaView: View {
                 .cornerRadius(12)
                 .shadow(radius: 6)
 
+                Image("imageninicio")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 300, height: 180)
+                    .clipped()
+                    .cornerRadius(12)
+                    .shadow(radius: 4)
+
                 ScrollView {
                     VStack(spacing: 20) {
 
-                        // txtfield categoria
+                        Text("Editar Categoría")
+                            .font(.system(size: 19, weight: .bold))
+                            .foregroundColor(Color.AzulOscuro)
+
                         TextField("Nombre de la categoría", text: $nombreCategoria)
                             .padding(14)
                             .background(Color.white)
@@ -47,7 +59,7 @@ struct EditarCategoriaView: View {
                                 RoundedRectangle(cornerRadius: 12)
                                     .stroke(Color.AzulOscuro, lineWidth: 1)
                             )
-                        
+
                         HStack(spacing: 12) {
 
                             Button("Cancelar") {
@@ -78,6 +90,8 @@ struct EditarCategoriaView: View {
             .padding(20)
             .frame(maxWidth: 370)
         }
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private func guardarCambios() {
@@ -88,24 +102,5 @@ struct EditarCategoriaView: View {
 
         viewModel.actualizarCategoria(categoriaEditada)
         dismiss()
-    }
-}
-
-
-struct EditarCategoriaView_Previews: PreviewProvider {
-    static var previews: some View {
-
-        let mockViewModel = CategoriaViewModel()
-        let mockCategoria = Categoria(
-            id: "demo-id",
-            nombre: "Bebidas"
-        )
-
-        NavigationStack {
-            EditarCategoriaView(
-                categoria: mockCategoria,
-                viewModel: mockViewModel
-            )
-        }
     }
 }

@@ -15,36 +15,6 @@ struct ProveedorItemView: View {
             Text("Número: \(numero)")
                 .font(.system(size: 14))
                 .foregroundColor(.white)
-
-            HStack {
-                Spacer()
-
-                NavigationLink {
-                    EditarProveedorView()
-                } label: {
-                    Text("Editar")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.blue)
-                        .cornerRadius(6)
-                }
-
-
-                Button(action: {
-                    // eliminar proveedor
-                }) {
-                    Text("Eliminar")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.red)
-                        .cornerRadius(6)
-                }
-            }
-            .padding(.top, 6)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)

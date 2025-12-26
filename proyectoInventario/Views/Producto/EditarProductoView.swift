@@ -34,28 +34,30 @@ struct EditarProductoView: View {
                 .scaledToFill()
                 .ignoresSafeArea()
 
-            ScrollView {
-                VStack(spacing: 16) {
+            VStack(spacing: 16) {
 
-                    VStack {
-                        Text("EDITAR PRODUCTO")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(16)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .background(Color.AzulOscuro)
+                // HEADER
+                VStack {
+                    Text("EDITAR PRODUCTO")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(16)
+                        .frame(maxWidth: .infinity)
+                }
+                .background(Color.AzulOscuro)
+                .cornerRadius(12)
+                .shadow(radius: 6)
+
+                // IMAGEN
+                Image("imageninicio")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 300, height: 180)
+                    .clipped()
                     .cornerRadius(12)
-                    .shadow(radius: 6)
+                    .shadow(radius: 4)
 
-                    Image("imageninicio")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 300, height: 180)
-                        .clipped()
-                        .cornerRadius(12)
-                        .shadow(radius: 4)
-
+                ScrollView {
                     VStack(spacing: 20) {
 
                         Text("Editar Producto")
@@ -117,13 +119,14 @@ struct EditarProductoView: View {
                     .cornerRadius(16)
                     .shadow(radius: 8)
                 }
-                .padding(20)
-                .frame(maxWidth: 370)
             }
+            .padding(20)
+            .frame(maxWidth: 370)
         }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
     }
+
 
     private func guardarCambios() {
         guard

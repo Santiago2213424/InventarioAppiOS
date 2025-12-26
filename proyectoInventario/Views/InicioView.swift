@@ -39,16 +39,6 @@ struct InicioView: View {
                             Text("Correo: \(correoUsuario)")
                                 .font(.system(size: 14))
                         }
-
-                        Spacer()
-
-                        Image("ic_pin")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30, height: 30)
-                            .padding(10)
-                            .background(Color.white)
-                            .clipShape(Circle())
                     }
 
                     Image("imageninicio")

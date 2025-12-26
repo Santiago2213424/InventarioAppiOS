@@ -43,4 +43,19 @@ class ProveedorService: BaseService {
             .document(id)
             .delete(completion: completion)
     }
+    
+    func actualizarProveedor(
+        _ proveedor: Proveedor,
+        completion: @escaping (Error?) -> Void
+    ) {
+        do {
+            try userCollection(collection)
+                .document(proveedor.id)
+                .setData(from: proveedor)
+            completion(nil)
+        } catch {
+            completion(error)
+        }
+    }
+
 }

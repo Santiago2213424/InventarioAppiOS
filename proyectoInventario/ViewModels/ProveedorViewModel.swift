@@ -49,4 +49,17 @@ class ProveedorViewModel: ObservableObject {
             }
         }
     }
+    
+    func actualizarProveedor(_ proveedor: Proveedor) {
+        service.actualizarProveedor(proveedor) { [weak self] error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    self?.errorMessage = error.localizedDescription
+                } else {
+                    self?.cargarProveedores()
+                }
+            }
+        }
+    }
+
 }
