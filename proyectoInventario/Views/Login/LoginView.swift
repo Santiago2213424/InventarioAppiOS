@@ -41,14 +41,14 @@ struct LoginView: View {
 
                 ScrollView {
                     VStack(spacing: 12) {
-
+                        
                         CustomTextField(
                             icon: "email",
                             placeholder: "Correo electrónico",
                             text: $email,
                             fieldType: .email
                         )
-
+                        
                         CustomTextField(
                             icon: "lock",
                             placeholder: "Contraseña",
@@ -57,7 +57,7 @@ struct LoginView: View {
                             showToggle: true,
                             mostrarPassword: $mostrarPassword
                         )
-
+                        
                         Button {
                             authVM.login(
                                 correo: email,
@@ -75,7 +75,7 @@ struct LoginView: View {
                                 .cornerRadius(12)
                         }
                         .padding(.top, 24)
-
+                        
                         NavigationLink {
                             RegisterView()
                         } label: {
@@ -87,14 +87,15 @@ struct LoginView: View {
                                 .background(Color.red)
                                 .cornerRadius(12)
                         }
+                        
+                        // NavigationLink {
+                        //     RecuperarContrasenaView()
+                        // } label: {
+                        //     Text("¿Olvidaste tu contraseña?")
+                        //         .font(.system(size: 15, weight: .bold))
+                        //         .foregroundColor(.blue)
+                        // }
 
-                        NavigationLink {
-                            RecuperarContrasenaView()
-                        } label: {
-                            Text("¿Olvidaste tu contraseña?")
-                                .font(.system(size: 15, weight: .bold))
-                                .foregroundColor(.blue)
-                        }
 
                         Spacer(minLength: 30)
                     }
